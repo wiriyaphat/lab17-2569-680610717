@@ -24,6 +24,9 @@ export default function HomePage() {
           </div>
         </CardContent>
       </Card>
+      <p className="flex justify-center text-xs text-muted-foreground">
+        จัดทำโดย Wiriyaphat Phromphong — รหัสนักศึกษา 680610717
+      </p>
     </div>
   );
 }

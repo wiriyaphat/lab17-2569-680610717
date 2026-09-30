@@ -1,4 +1,5 @@
 import { ConfirmDeleteButton } from "@/components/confirm-button";
+import { Badge } from "@/components/ui/badge";
 import {
   Table,
   TableBody,
@@ -14,13 +15,17 @@ export function CourseTable() {
   const removeCourse = useEnrollmentStore((s) => s.removeCourse);
 
   return (
-    <div className="rounded-lg border">
-      <Table>
+    <div className="overflow-x-auto rounded-lg border">
+      <Table className="min-w-[1050px]">
         <TableHeader>
           <TableRow>
             <TableHead>รหัสวิชา</TableHead>
             <TableHead>ชื่อวิชา</TableHead>
+            <TableHead>หลักสูตร</TableHead>
+            <TableHead>ภาคการศึกษา</TableHead>
+            <TableHead>รายละเอียด</TableHead>
             <TableHead>ผู้สอน</TableHead>
+            <TableHead>รับข่าวสารทางอีเมล</TableHead>
             <TableHead className="w-20">Action</TableHead>
           </TableRow>
         </TableHeader>
@@ -28,7 +33,7 @@ export function CourseTable() {
           {courses.length === 0 && (
             <TableRow>
               <TableCell
-                colSpan={4}
+                colSpan={8}
                 className="h-20 text-center text-muted-foreground"
               >
                 ยังไม่มีวิชาที่เปิดสอน
@@ -40,12 +45,36 @@ export function CourseTable() {
               <TableCell>{course.courseId}</TableCell>
               <TableCell>{course.courseTitle}</TableCell>
               <TableCell>
-                {/* แสดงรายชื่อผู้สอนเป็นข้อความธรรมดา คั่นด้วย ", " */}
+                <Badge variant="outline">{course.program}</Badge>
+              </TableCell>
+              <TableCell>
+                {course.semester === "3"
+                  ? "ภาคฤดูร้อน"
+                  : `ภาคการศึกษาที่ ${course.semester}`}
+              </TableCell>
+              <TableCell className="max-w-64 whitespace-normal text-muted-foreground">
+                {course.description || "-"}
+              </TableCell>
+              <TableCell>
                 {course.instructors.length === 0 ? (
                   <span className="text-muted-foreground">ยังไม่มีผู้สอน</span>
                 ) : (
-                  course.instructors.join(", ")
+                  <div className="grid gap-1">
+                    {course.instructors.map((instructor) => (
+                      <div key={instructor.email}>
+                        <div>{instructor.name}</div>
+                        <div className="text-xs text-muted-foreground">
+                          {instructor.email}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 )}
+              </TableCell>
+              <TableCell>
+                <Badge variant={course.notifyByEmail ? "default" : "secondary"}>
+                  {course.notifyByEmail ? "รับ" : "ไม่รับ"}
+                </Badge>
               </TableCell>
               <TableCell>
                 <ConfirmDeleteButton
